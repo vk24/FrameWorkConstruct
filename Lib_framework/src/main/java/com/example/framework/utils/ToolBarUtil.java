@@ -10,7 +10,7 @@ import com.example.framework.R;
 
 /**
  * function:公共标题栏
- * describe:更多描述
+ * describe:
  * Email:yangchaozhi@outlook.com
  *
  * @author vinko on 2017/2/11.
