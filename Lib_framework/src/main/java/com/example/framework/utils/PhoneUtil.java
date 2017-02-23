@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,4 +83,76 @@ public class PhoneUtil {
             e.printStackTrace();
         }
     }
+
+    //    public boolean isAppInstalled(Context context, String uri) {
+//        PackageManager pm = context.getPackageManager();
+//        boolean installed = false;
+//        try {
+//            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+//            installed = true;
+//        } catch (PackageManager.NameNotFoundException e) {
+//            installed = false;
+//        }
+//        return installed;
+//    }
+
+    /**
+     * 判断应用是否安装
+     * @param context
+     *      上下文
+     * @param packageName
+     *      包名
+     * @return
+     *      应用是否安装
+     */
+    public static boolean isAppInstalled(Context context, String packageName) {
+        final PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);
+        List<String> pName = new ArrayList<String>();
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                pName.add(pn);
+            }
+        }
+        return pName.contains(packageName);
+    }
+
+    /**
+     * 根据包名跳至指定应用
+     * 善融:com.ccb.shop.view
+     * 龙行:com.ccb.lxtx
+     *
+     * @param context
+     * @param packageName
+     * @param listener
+     */
+    public static void startApp(Context context, String packageName, IActivityNotFoundListener listener) {
+        Intent intent = new Intent();
+        intent.setAction(intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(intent, 0);
+        //获取Launcher列表名称
+        Intent intent1 = null;
+        for (ResolveInfo info : list) {
+            if (info.activityInfo.packageName.equals(packageName)) {
+                info.loadIcon(context.getPackageManager());
+                info.loadLabel(context.getPackageManager());
+                intent1 = context.getPackageManager().getLaunchIntentForPackage(packageName);
+            }
+        }
+        try {
+            context.startActivity(intent1);
+        } catch (Exception e) {
+            listener.doWhenActivityNotFound();
+        }
+    }
+
+    /**
+     * 回调接口
+     */
+    public interface IActivityNotFoundListener {
+        void doWhenActivityNotFound();
+    }
+
 }
