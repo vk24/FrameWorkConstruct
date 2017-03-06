@@ -17,7 +17,7 @@ import java.util.Map;
  * Email：yangchaozhi@outlook.com
  * @author by vinko on 2017/2/7
  */
-public class JsonUtils {
+public class JsonUtil {
 
     private static boolean isPrintException = Constants.IS_DEBUG;//日志开关
     /**
@@ -376,7 +376,7 @@ public class JsonUtils {
      * get map from jsonObject.
      */
     public static Map<String, String> getMap(JSONObject jsonObject, String key) {
-        return JsonUtils.parseKeyAndValueToMap(JsonUtils.getString(jsonObject, key, null));
+        return JsonUtil.parseKeyAndValueToMap(JsonUtil.getString(jsonObject, key, null));
     }
 
     /**

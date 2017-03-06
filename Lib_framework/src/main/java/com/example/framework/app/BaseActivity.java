@@ -6,21 +6,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.example.framework.R;
-import com.example.framework.utils.SysStatusBarUtils;
-import com.example.framework.utils.ToolBarUtil;
+import com.example.framework.utils.SysStatusBarUtil;
 
 /**
  * function：使用的Material Design设计
  * Activity基类，所有的activity必须继承此类
  * Email：yangchaozhi@outlook.com
+ *
  * @author vinko on 2017/2/6.
  */
 
@@ -32,8 +32,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected Context mContext;
 
+
+    //用于标记页面标识
+    private Object pageTag;
+
     /**
      * 初始化布局文件
+     *
      * @return
      */
     protected abstract int initLayoutId();
@@ -50,16 +55,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         mContext = BaseActivity.this;
-        Log.i(ISTTRING,this.getClass().getSimpleName() + "is create");
-        ActivityManager.getInstance().addActivity(this);
+        Log.i(ISTTRING, this.getClass().getSimpleName() + "is onCreate");
+        BaseActivityManager.getInstance().addActivity(this);
 
         setContentView(initLayoutId());
-        setToolBar();
         setImmerseLayout(findViewById(R.id.toolbars));
-//        SysStatusBarUtils.transparencyBar(this);
+//        SysStatusBarUtil.transparencyBar(this);
         initView();
         initData();
 
@@ -73,11 +76,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void setImmerseLayout(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window window = getWindow();
-                /*window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);*/
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-            int statusBarHeight = SysStatusBarUtils.getStatusBarHeight(this);
+            int statusBarHeight = SysStatusBarUtil.getStatusBarHeight(this);
+            Log.d("statusBarHeight", statusBarHeight + "");
             view.setPadding(0, statusBarHeight, 0, 0);
         }
     }
@@ -85,13 +89,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i(ISTTRING, this.getClass().getSimpleName() + "is onResume");
+        BaseActivityManager.getInstance().setCurrentPre(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(ISTTRING,this.getClass().getSimpleName() + "is Destroy");
-        ActivityManager.getInstance().removeActivity(this);
+        Log.i(ISTTRING, this.getClass().getSimpleName() + "is onDestroy");
+        BaseActivityManager.getInstance().removeActivity(this);
     }
 
     @Override
@@ -99,50 +105,112 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private String titleStr;
-    private View.OnClickListener leftBtnListener;
-    private View.OnClickListener rightBtnListener;
+    private AppCompatImageButton commonRightBtn, commonLeftBtn;
+    private AppCompatTextView commonTitle;
 
-    public void setLeftBtnListener(View.OnClickListener listener){
-        this.leftBtnListener = listener;
+    private void findCommonTitleId() {
+        commonRightBtn = (AppCompatImageButton) findViewById(R.id.common_btn_right);
+        commonLeftBtn = (AppCompatImageButton) findViewById(R.id.common_btn_left);
+        commonTitle = (AppCompatTextView) findViewById(R.id.common_tv_title);
     }
 
-    public void setRightBtnListener (View.OnClickListener listener){
-        this.rightBtnListener = listener;
-    }
+    /**
+     * 设置标题样式
+     *
+     * @param title          标题文字
+     * @param isDrawerMenu   左按钮展示位抽屉按钮？返回按钮
+     * @param isShowRightBtn 是否展示右侧按钮
+     */
+    protected void useCustomTitle(String title, boolean isDrawerMenu, boolean isShowRightBtn) {
+        findCommonTitleId();
+        commonTitle.setText(title);
 
-    protected void setToolBar(){
-        Toolbar toolbar = (Toolbar) this.findViewById(R.id.toolbars);
-        ToolBarUtil toolBarUtil = new ToolBarUtil(toolbar);
-        if (titleStr != null && !"".equals(titleStr)) {
-            toolBarUtil.setToolbarTitle(titleStr);
+        if (isDrawerMenu) {
+            setLeftBtnIsDrawer();
         } else {
-            toolBarUtil.setToolbarTitle("默认标题");
+            setLeftBtnIsBack();
         }
-        if (rightBtnListener != null){
-            toolBarUtil.setRightButton(R.mipmap.arrow,rightBtnListener);
-        } else {
-            toolBarUtil.setRightButton(R.mipmap.arrow, new View.OnClickListener() {
+
+        if (isShowRightBtn) {
+            commonRightBtn.setVisibility(View.VISIBLE);
+            commonRightBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(),"LEFT",Toast.LENGTH_SHORT).show();
+                public void onClick(View view) {
+                    back2Home();
                 }
             });
-        }
-
-        if (leftBtnListener != null){
-            toolBarUtil.setLeftButton(R.mipmap.arrow,leftBtnListener);
         } else {
-            toolBarUtil.setLeftButton(R.mipmap.arrow, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getApplicationContext(),"RIGHT",Toast.LENGTH_SHORT).show();
-                }
-            });
+            commonRightBtn.setVisibility(View.GONE);
         }
     }
 
-    public void setTitle(String title){
-        this.titleStr = title;
+    public void setLeftBtnIsDrawer() {
+        commonLeftBtn.setBackgroundResource(R.mipmap.drawer);
+        commonLeftBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //执行抽屉式按钮的点击事件
+            }
+        });
     }
+
+    public void setLeftBtnIsBack() {
+        commonLeftBtn.setBackgroundResource(R.mipmap.back);
+        commonLeftBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handBack();
+            }
+        });
+    }
+
+    public void setLeftBtnClickListener(View.OnClickListener listener) {
+        if (null != listener) {
+            commonLeftBtn.setOnClickListener(listener);
+        }
+    }
+
+    public void setRightBtnClickListener(View.OnClickListener listener) {
+        if (null != listener) {
+            commonRightBtn.setOnClickListener(listener);
+        }
+    }
+
+    public void setLeftBtnBackground(int resId) {
+        commonLeftBtn.setBackgroundResource(resId);
+    }
+
+    public void setRightBtnBackground(int resId) {
+        commonRightBtn.setBackgroundResource(resId);
+    }
+
+    //重新设置标题文字
+    protected void resetTitle(String title) {
+        ((AppCompatTextView) findViewById(R.id.common_tv_title)).setText(title);
+    }
+
+    //执行回到主页的操作
+    protected void back2Home() {
+
+    }
+
+    protected void handBack() {
+        finish();
+    }
+
+    @Override
+    public void finish() {
+        BaseActivityManager.getInstance().removeActivity(this);
+        super.finish();
+    }
+
+    public Object getPageTag() {
+        return pageTag;
+    }
+
+    //设置页面标识
+    public void setPageTag(Object pageTag) {
+        this.pageTag = pageTag;
+    }
+
 }

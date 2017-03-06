@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
  * @author vinko on 2017/2/8.
  */
 
-public class PreUtils {
+public class PreUtil {
 
     private static final String PREF_NAME = "config";
 

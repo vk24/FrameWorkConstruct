@@ -11,7 +11,7 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
  * Email：yangchaozhi@outlook.com
  * @author vinko on 2017/2/8
  */
-public class ChineseUtils {
+public class ChineseUtil {
 
     private static final String UNIT = "万仟佰拾亿仟佰拾万仟佰拾元角分";
 
@@ -19,7 +19,7 @@ public class ChineseUtils {
 
     private static final double MAX_VALUE = 9999999999999.99D;
 
-    private ChineseUtils() {
+    private ChineseUtil() {
     }
 
     /**

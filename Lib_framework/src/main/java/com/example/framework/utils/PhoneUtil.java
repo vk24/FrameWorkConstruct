@@ -122,6 +122,7 @@ public class PhoneUtil {
      * 根据包名跳至指定应用
      * 善融:com.ccb.shop.view
      * 龙行:com.ccb.lxtx
+     * 建设银行：com.chinamworld.main(目前)
      *
      * @param context
      * @param packageName

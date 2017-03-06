@@ -11,7 +11,6 @@ import com.example.administrator.vinkoworktest.R;
 import com.example.administrator.vinkoworktest.adapter.RecyclerViewAdapter;
 import com.example.administrator.vinkoworktest.api.ItemTouchCallbackHelper;
 import com.example.framework.app.BaseActivity;
-import com.example.framework.utils.ToolBarUtil;
 
 import java.util.ArrayList;
 
@@ -31,8 +30,8 @@ public class DragRecyclerViewAct extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = DragRecyclerViewAct.this;
+        useCustomTitle("第二页",false,false);
         initView();
-        setTitle("第二页");
     }
 
     @Override

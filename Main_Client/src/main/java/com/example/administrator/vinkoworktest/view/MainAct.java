@@ -3,10 +3,10 @@ package com.example.administrator.vinkoworktest.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.example.administrator.vinkoworktest.R;
 import com.example.framework.app.BaseActivity;
-import com.example.framework.utils.ToolBarUtil;
+import com.example.framework.utils.StringUtil;
 import com.example.framework.widget.ScrollBottomPopWindow;
 import com.example.lib_network.SendRequest;
 
@@ -36,6 +36,7 @@ public class MainAct extends BaseActivity {
     private SwitchCompat sc_btn;
     private AppCompatCheckBox checkBox;
     private ScrollBottomPopWindow scrollBottomPopWindow;
+    private AppCompatEditText et_input;
 
     private ArrayList<String > keyList = new ArrayList<>();
     private ArrayList<Object > valueList = new ArrayList<>();
@@ -43,7 +44,7 @@ public class MainAct extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("首页1");
+        useCustomTitle("首页",true,true);
         initView ();
     }
 
@@ -85,22 +86,32 @@ public class MainAct extends BaseActivity {
         btn2ShowPop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SendRequest.sendAsyncRequest("", new SendRequest.requestListener() {
+                new Thread(new Runnable() {
                     @Override
-                    public void onResult(Object o) {
-                        Response response = (Response) o;
-                        tv_result.setText(response.body().toString());
-                        runOnUiThread(new Runnable() {//开启子线程更新UI
+                    public void run() {
+                        Toast.makeText(MainAct.this,"执行交易",Toast.LENGTH_SHORT).show();
+                        SendRequest.sendRequest("http://www.ccb.com/cn/html1/office/ebank/dzb/subject/15/0617yzylt/index.html", new SendRequest.requestListener() {
                             @Override
-                            public void run() {
+                            public void onResult(Response response) {
+                                final Response response1 = response;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv_result.setText(response1.body().toString() + response1.toString());
+                                    }
+                                });
+                            }
 
+                            @Override
+                            public void onError(Exception e) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv_result.setText("e");
+                                    }
+                                });
                             }
                         });
-                    }
-
-                    @Override
-                    public void onFailed() {
-                        tv_result.setText("you a sendfailed");
                     }
                 });
             }
@@ -129,10 +140,23 @@ public class MainAct extends BaseActivity {
                 }
             }
         });
+
+        et_input = (AppCompatEditText) findViewById(R.id.et_input);
+        StringUtil.setEditTextInput(0,et_input);
     }
 
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    public void setLeftBtnClickListener(View.OnClickListener listener) {
+        super.setLeftBtnClickListener(listener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

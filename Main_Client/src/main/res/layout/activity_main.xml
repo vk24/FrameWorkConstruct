@@ -47,4 +47,19 @@
         android:layout_height="wrap_content"
         android:text="haha"/>
 
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/et_input"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x158"
+        android:background="@null"
+        android:hint="请输入"
+        android:numeric="decimal"/>
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x158"
+        android:hint="zheshi"
+        android:textSize="@dimen/x43"
+        android:textColor="@color/ccb_form_text_color6"/>
+
 </LinearLayout>

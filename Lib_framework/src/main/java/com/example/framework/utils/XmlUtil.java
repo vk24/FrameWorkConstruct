@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Email：yangchaozhi@outlook.com
  * @author vinko on 2017/2/8
  */
-public class XmlUtils {
+public class XmlUtil {
 
     //xml转bean对象,其中beanRootNode是xml解析根节点，beanClazz是自定义的解析bean对象
     public static <T> T getBean(String src, String beanRootNode, Class<T> beanClazz) throws Exception {

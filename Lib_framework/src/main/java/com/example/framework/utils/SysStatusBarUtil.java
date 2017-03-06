@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
  * @author vinko on 2017/2/8.
  */
 
-public class SysStatusBarUtils {
+public class SysStatusBarUtil {
 
     /**
      * 用于获取状态栏的高度。 使用Resource对象获取（推荐这种方式）
