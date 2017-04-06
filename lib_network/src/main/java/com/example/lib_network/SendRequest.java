@@ -60,7 +60,6 @@ public class SendRequest {
      * @param listener
      */
     public static void sendAsyncRequest(final Context ctx, final String url, final requestListener listener) {
-        Toast.makeText(ctx, "开始发送交易", Toast.LENGTH_SHORT).show();
         OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {

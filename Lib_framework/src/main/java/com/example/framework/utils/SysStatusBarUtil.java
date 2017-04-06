@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,6 +20,24 @@ import java.lang.reflect.Method;
  */
 
 public class SysStatusBarUtil {
+
+    /**
+     * 设置状态栏
+     *
+     * @param view
+     */
+    public static void setImmerseLayout(Activity activity, View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window window = activity.getWindow();
+            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            int statusBarHeight = SysStatusBarUtil.getStatusBarHeight(activity);
+            Log.d("statusBarHeight", statusBarHeight + "");
+            view.setPadding(0, statusBarHeight, 0, 0);
+        }
+    }
 
     /**
      * 用于获取状态栏的高度。 使用Resource对象获取（推荐这种方式）

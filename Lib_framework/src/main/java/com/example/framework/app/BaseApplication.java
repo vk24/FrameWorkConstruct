@@ -8,16 +8,24 @@ import android.app.Application;
  * @author by vinko on 2017/2/7.
  */
 
-public class BaseApplication extends Application {
+public abstract class BaseApplication extends Application {
 
     private static BaseApplication instance;
 
     private BaseApplication(){}
+
+    public abstract void initConfigs ();
 
     public static synchronized BaseApplication getInstance(){
         if (instance == null) {
             throw new RuntimeException("IlleagelStateExp : instance is null, application error");
         }
         return instance;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initConfigs();
     }
 }

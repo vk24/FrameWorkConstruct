@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion '25'
     defaultConfig {
         applicationId "com.example.administrator.vinkoworktest"
         minSdkVersion 17
@@ -27,4 +27,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile 'com.android.support:recyclerview-v7:25.1.1'
     compile 'com.android.support:design:25.1.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }

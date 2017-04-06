@@ -26,6 +26,8 @@ public class BaseActivityManager {
     //单例
     private static BaseActivityManager instance = null;
 
+    public static final String FRAGMENT_TAG = "fragment";
+
     private BaseActivityManager() {
     }
 
@@ -41,7 +43,7 @@ public class BaseActivityManager {
      */
     private List<WeakReference<BaseActivity>> activityCache = new ArrayList<>();
 
-    private Map<Long, BaseFragment> fragments = new ConcurrentHashMap<>();
+    private Map<Long, BaseFragment1> fragments = new ConcurrentHashMap<>();
 
     private List<BaseActivity> activities = new ArrayList<>();
     /**
@@ -109,27 +111,60 @@ public class BaseActivityManager {
     public void starActivity(Context context, Class clz) {
         String clzName = clz.getSimpleName();
         Log.d(TAG, "+clzName=" + clzName);
-
-        //转成对应的类,根据父类跳转
-        if (BaseActivity.class.isAssignableFrom(clz)) {
-            Log.d(TAG, "基类是BaseActivity");
-            Intent intent = new Intent(context, clz);
-            context.startActivity(intent);
-        } else if (BaseFragment.class.isAssignableFrom(clz)) {
+        try {
+            //转成对应的类,根据父类跳转
+            if (BaseActivity.class.isAssignableFrom(clz)) {
+                Log.d(TAG, "基类是BaseActivity");
+                Intent intent = new Intent(context, clz);
+                context.startActivity(intent);
+            } else if (BaseFragment1.class.isAssignableFrom(clz)) {
+                Log.d(TAG, "基类是BaseFragment1");
+                BaseFragment1 baseFragment = (BaseFragment1) clz.newInstance();
+                starFragment(context, baseFragment);
+            }
+        } catch (Exception e) {
+            Log.e(TAG,"starActivity:" + e.toString());
         }
     }
 
-    public void starActivity(Context context, Class clz, Bundle bundle) {
+    public void starActivity(Context context, Class clz, Bundle bundle){
         String clzName = clz.getSimpleName();
         Log.d(TAG, "+clzName=" + clzName);
 
-        //转成对应的类,根据父类跳转
-        if (BaseActivity.class.isAssignableFrom(clz)) {
-            Log.d(TAG, "基类是BaseActivity");
-            Intent intent = new Intent(context, clz);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
+        try {
+            //转成对应的类,根据父类跳转
+            if (BaseActivity.class.isAssignableFrom(clz)) {
+                Log.d(TAG, "基类是BaseActivity");
+                Intent intent = new Intent(context, clz);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            } else if (BaseFragment1.class.isAssignableFrom(clz)) {
+                Log.d(TAG, "基类是BaseFragment1");
+                BaseFragment1 baseFragment = (BaseFragment1) clz.newInstance();
+                baseFragment.setArguments(bundle);
+                starFragment(context, baseFragment);
+            }
+        } catch (Exception e) {
+            Log.e(TAG,"starActivity2:" + e.toString());
         }
+    }
+
+    public void starFragment (Context context, BaseFragment1 baseFragment) {
+        Intent intent = new Intent(context, BaseTitleActivity.class);
+        if (baseFragment != null) {
+            long id = System.currentTimeMillis();
+            fragments.put(id,baseFragment);
+            intent.putExtra(FRAGMENT_TAG,id);
+        }
+        context.startActivity(intent);
+    }
+
+    public BaseFragment1 getFragment (long id) {
+        return fragments.get(id);
+    }
+
+    public void removeFragment(long id) {
+        fragments.remove(id);
     }
 
     /**

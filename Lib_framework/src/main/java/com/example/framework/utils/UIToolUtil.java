@@ -225,4 +225,62 @@ public class UIToolUtil {
         }
     }
 
+    /***
+     * 读取图片
+     *
+     * @param context
+     * @param resId
+     * @return
+     */
+    public static Bitmap readBitMap(Context context, int resId) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inPreferredConfig = Bitmap.Config.RGB_565;
+        opt.inPurgeable = true;
+        opt.inInputShareable = true;
+        // 获取资源图片
+        InputStream is = context.getResources().openRawResource(resId);
+        return BitmapFactory.decodeStream(is, null, opt);
+    }
+
+    /***
+     * 读取图片
+     *
+     * @param context
+     * @param resId
+     * @param inSampleSize
+     *            采样比率
+     * @return
+     */
+    public static Bitmap readBitMap(Context context, int resId, int inSampleSize) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inPreferredConfig = Bitmap.Config.RGB_565;
+        opt.inPurgeable = true;
+        opt.inInputShareable = true;
+        opt.inSampleSize = inSampleSize;
+        // 获取资源图片
+        InputStream is = context.getResources().openRawResource(resId);
+        return BitmapFactory.decodeStream(is, null, opt);
+    }
+
+
+    /**
+     * 读取图片
+     * @param context 上下文
+     * @param path 图片路径
+     * @return
+     */
+    public static Bitmap readBitmapWithLocalPath(Context context, String path){
+        try {
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inPreferredConfig = Bitmap.Config.RGB_565;
+            opt.inPurgeable = true;
+            opt.inInputShareable = true;
+            // 获取资源图片
+            InputStream bitmapStream = new FileInputStream(new File(path));
+            return BitmapFactory.decodeStream(bitmapStream, null, opt);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+    }
+
 }

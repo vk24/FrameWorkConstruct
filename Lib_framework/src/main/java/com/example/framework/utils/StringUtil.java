@@ -7,13 +7,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.example.framework.R;
 import com.example.framework.app.BaseApplication;
 
 import org.json.JSONException;
@@ -665,61 +668,52 @@ public class StringUtil {
         return stream_2String(inStream, null);
     }
 
-    /***
-     * 读取图片
-     *
-     * @param context
-     * @param resId
-     * @return
-     */
-    public static Bitmap readBitMap(Context context, int resId) {
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-        opt.inPreferredConfig = Bitmap.Config.RGB_565;
-        opt.inPurgeable = true;
-        opt.inInputShareable = true;
-        // 获取资源图片
-        InputStream is = context.getResources().openRawResource(resId);
-        return BitmapFactory.decodeStream(is, null, opt);
-    }
-
-    /***
-     * 读取图片
-     *
-     * @param context
-     * @param resId
-     * @param inSampleSize
-     *            采样比率
-     * @return
-     */
-    public static Bitmap readBitMap(Context context, int resId, int inSampleSize) {
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-        opt.inPreferredConfig = Bitmap.Config.RGB_565;
-        opt.inPurgeable = true;
-        opt.inInputShareable = true;
-        opt.inSampleSize = inSampleSize;
-        // 获取资源图片
-        InputStream is = context.getResources().openRawResource(resId);
-        return BitmapFactory.decodeStream(is, null, opt);
-    }
-
-
     /**
-     * 读取图片
-     * @param context 上下文
-     * @param path 图片路径
+     * 处理数字后面两位放大效果
+     * @param context
+     * @param str
      * @return
      */
-    public static Bitmap readBitmapWithLocalPath(Context context, String path){
+    public static SpannableString getLastTowLargeSpannable(Context context, String str) {
         try {
-            BitmapFactory.Options opt = new BitmapFactory.Options();
-            opt.inPreferredConfig = Bitmap.Config.RGB_565;
-            opt.inPurgeable = true;
-            opt.inInputShareable = true;
-            // 获取资源图片
-            InputStream bitmapStream = new FileInputStream(new File(path));
-            return BitmapFactory.decodeStream(bitmapStream, null, opt);
-        } catch (FileNotFoundException e) {
-            return null;
+            if (str.contains(".")) {
+                String text;
+                try {
+                    text = Double.parseDouble(str) + "";
+                } catch (NumberFormatException e) {
+                    text = "0.00";
+                }
+                SpannableString span = new SpannableString(text);
+                int pointLength = text.substring(text.indexOf(".")).length();
+                if (pointLength >= 3) {
+                    return getSpanStrByLength(context, span, text, 2);
+                } else if (pointLength == 2) {
+                    return getSpanStrByLength(context, span, text, 1);
+                } else {
+                    return new SpannableString(Double.parseDouble(text) == 0 ? "--" : text);
+                }
+            } else {
+                SpannableString span = new SpannableString(str);
+                if (str.length() > 2) {
+                    return getSpanStrByLength(context, span, str, 2);
+                } else {
+                    return new SpannableString(Double.parseDouble(str) == 0 ? "--" : str);
+                }
+            }
+        } catch (Exception e) {
+            return new SpannableString("--");
+        }
+    }
+
+    private static SpannableString getSpanStrByLength (Context context, SpannableString spanStr, String str, int length) {
+        if (Double.parseDouble(str) == 0) {
+            return new SpannableString("--");
+        } else {
+            spanStr.setSpan(new AbsoluteSizeSpan(context.getResources().getDimensionPixelSize(R.dimen.x37)), 0, str.length() - length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spanStr.setSpan(new AbsoluteSizeSpan(context.getResources().getDimensionPixelSize(R.dimen.x49)), str.length() - length,
+                    str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return spanStr;
         }
     }
 

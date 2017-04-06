@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.View;
 
 import com.example.administrator.vinkoworktest.R;
 import com.example.administrator.vinkoworktest.adapter.RecyclerViewAdapter;
@@ -35,7 +36,7 @@ public class DragRecyclerViewAct extends BaseActivity {
     }
 
     @Override
-    protected int initLayoutId() {
+    protected int getLayoutId() {
         return R.layout.activity_drag_recyclerview;
     }
 
@@ -67,5 +68,13 @@ public class DragRecyclerViewAct extends BaseActivity {
 
     }
 
+    @Override
+    protected void initClickListener() {
 
+    }
+
+    @Override
+    protected void processClick(View view) {
+
+    }
 }

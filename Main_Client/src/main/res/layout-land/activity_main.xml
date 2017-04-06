@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.administrator.vinkoworktest.view.MainAct"
+    android:weightSum="1"
+    android:orientation="vertical">
+
+    <include layout="@layout/common_tool_bar"/>
+
+    <TextView
+        android:id="@+id/tv_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="弹窗控件" />
+
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/sc_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="是？否"
+        style="@style/MySwitch"/>
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/des_cb"
+        style="@style/MyCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="haha" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/et_input"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x158"
+        android:background="@null"
+        android:hint="请输入"
+        android:numeric="decimal"/>
+
+    <android.support.v7.widget.AppCompatCheckedTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x158"
+        android:hint="zheshi"
+        android:textSize="@dimen/x43"
+        android:textColor="@color/ccb_form_text_color6"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="这是什么鬼"
+        android:textSize="@dimen/x43"
+        android:textColor="@color/bg_gray_separaor_999999"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/bg_gray_separaor_9b9eac"
+        android:textSize="30dp"
+        android:text="这是什么鬼"/>
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/cb_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="确定"/>
+
+    <Button
+        android:id="@+id/btn_timer"
+        style="@style/Base.TextAppearance.AppCompat.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.33" />
+
+    <Button
+        android:id="@+id/btn_drag"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="可拖动的图标界面"
+        android:layout_weight="0.33" />
+
+    <com.example.framework.widget.PayEditText
+        android:id="@+id/et_pay"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/color_blue_light"
+        android:layout_weight="0.33" />
+
+</LinearLayout>

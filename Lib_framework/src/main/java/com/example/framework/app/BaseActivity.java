@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,13 +25,14 @@ import com.example.framework.utils.SysStatusBarUtil;
  * @author vinko on 2017/2/6.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final String TAG = BaseActivity.class.getSimpleName();
 
     public static final String ISTTRING = "i";
 
     protected Context mContext;
+    private SparseArray<View> mViews;
 
 
     //用于标记页面标识
@@ -41,7 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      *
      * @return
      */
-    protected abstract int initLayoutId();
+    protected abstract int getLayoutId();
 
     /**
      * 初始化控件
@@ -53,19 +55,26 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected abstract void initData();
 
+    /*
+    设置事件监听
+     */
+    protected abstract void initClickListener();
+
+    protected abstract void processClick(View view) throws InstantiationException, IllegalAccessException;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = BaseActivity.this;
         Log.i(ISTTRING, this.getClass().getSimpleName() + "is onCreate");
         BaseActivityManager.getInstance().addActivity(this);
-
-        setContentView(initLayoutId());
-        setImmerseLayout(findViewById(R.id.toolbars));
+        mViews = new SparseArray<>();
+        setContentView(getLayoutId());
+        SysStatusBarUtil.setImmerseLayout(this,findViewById(R.id.toolbars));
 //        SysStatusBarUtil.transparencyBar(this);
         initView();
+        initClickListener();
         initData();
-
     }
 
     @Override
@@ -73,17 +82,35 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.setContentView(layoutResID);
     }
 
-    protected void setImmerseLayout(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window window = getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            int statusBarHeight = SysStatusBarUtil.getStatusBarHeight(this);
-            Log.d("statusBarHeight", statusBarHeight + "");
-            view.setPadding(0, statusBarHeight, 0, 0);
+    @Override
+    public void onClick(View view) {
+        try {
+            processClick(view);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
+    }
+
+    /**
+     * 通过id找到view
+     *
+     * @param viewId
+     * @param <T>
+     * @return
+     */
+    public <T extends View> T FID(int viewId) {
+        T view = (T) mViews.get(viewId);
+        if (view == null) {
+            view = (T) findViewById(viewId);
+            mViews.put(viewId, view);
+        }
+        return view;
+    }
+
+    public <T extends View> void setOnClick(T View) {
+        View.setOnClickListener(this);
     }
 
     @Override
