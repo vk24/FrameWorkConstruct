@@ -3,12 +3,11 @@ package com.example.framework.sqlite;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * function: 类功能描述
+ * function: 数据库帮助类
  * describe:详细描述
  * email：yangchaozhi@outlook.com
  *
